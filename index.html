@@ -1,0 +1,178 @@
+<!doctype html>  
+<html lang="en">
+  
+  <head>
+    <meta charset="utf-8">
+    
+    <title>Code Foo :: Debugging Javascript</title>
+
+    <meta name="description" content="A presentation for IGN's Code Foo program on debugging Javascript">
+    <meta name="author" content="Ryan Sullivan">
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    
+    <link href='http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/ign.css">
+    <link rel="stylesheet" href="css/print.css" type="text/css" media="print">
+
+    <link rel="stylesheet" href="lib/zenburn.css">
+  </head>
+  
+  <body>
+    
+    <div id="reveal">
+
+      <!-- Used to fade in a background when a specific slide state is reached -->
+      <div class="state-background"></div>
+      
+      <!-- Any section element inside of this container is displayed as a slide -->
+      <div class="slides">
+        <section>
+          <h4 class="red"><img class="logo" src="assets/images/logo.png" /> Code Foo</h4>
+          <h1>Debugging Javascript and CSS</h1>
+        </section>
+
+        <section>
+          <h2>Overview</h2>
+          <ul>
+            <li class="fragment">Intro to the Chrome developer tools</li>
+            <li class="fragment">Inspecting Elements</li>
+            <li class="fragment">Javascript Debugging with Chrome</li>
+            <li class="fragment">Debugging with <span class="red">Internet Explorer</span></li>
+          </ul>
+        </section>
+
+        <section>
+          <section>
+            <h2>Intro to the Chrome developer tools</h2>
+            <p>View > Developer > Developer Tools</p>
+          </section>
+          <section>
+            <h2>Dock or Undock</h2>
+          </section>
+          <section>
+            <h2>Options</h2>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h2>Inspecting Elements</h2>
+            <img src="assets/images/inspect.png">
+          </section>
+          <section>
+            <h2>Navigating the DOM</h2>
+            <img src="assets/images/dom.png">
+          </section>
+          <section>
+            <h2>Debugging and Editing CSS</h2>
+            <img src="assets/images/css.png">
+          </section>
+          <section>
+            <h2>The Box Model</h2>
+            <img src="assets/images/box-model.png">
+          </section>
+          <section>
+            <h2>Editing HTML</h2>
+            <img src="assets/images/edit-html.png">
+          </section>
+          <section>
+            <h2>Event Listeners</h2>
+            <img src="assets/images/event-listeners.png">
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h2>Javascript Debugging with Chrome</h2>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h2>Debugging with <span class="red">Internet Explorer</span></h2>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h2>Resources</h2>
+            <a href="http://www.jsfiddle.net" class="fragment" target="_blank">JSFiddle</a><br>
+            <a href="https://developers.google.com/chrome-developer-tools/" class="fragment" target="_blank">Chrome Developer Tools Documentation</a><br>
+            <a href="http://www.microsoft.com/en-us/download/details.aspx?id=18359" class="fragment" target="_blank">IE Developer Toolbar</a><br>
+            <a href="http://getfirebug.com/" class="fragment" target="_blank">Firebug</a>
+          </section>
+        </section>
+      </div>
+
+      <!-- The navigational controls UI -->
+      <aside class="controls">
+        <a class="left" href="#">&#x25C4;</a>
+        <a class="right" href="#">&#x25BA;</a>
+        <a class="up" href="#">&#x25B2;</a>
+        <a class="down" href="#">&#x25BC;</a>
+      </aside>
+
+      <!-- Displays presentation progress, max value changes via JS to reflect # of slides -->
+      <div class="progress"><span></span></div>
+      
+    </div>
+
+    <!-- Optional libraries for code syntax highlighting and classList support in IE9 -->
+    <script src="lib/highlight.js"></script>
+    <script src="lib/classList.js"></script>
+    
+    <script src="js/reveal.js"></script>
+    
+    <script>
+      // Parse the query string into a key/value object
+      var query = {};
+      location.search.replace( /[A-Z0-9]+?=(\w*)/gi, function(a) {
+        query[ a.split( '=' ).shift() ] = a.split( '=' ).pop();
+      } );
+
+      // Fires when a slide with data-state=customevent is activated
+      Reveal.addEventListener( 'customevent', function() {
+        alert( '"customevent" has fired' );
+      } );
+
+      // Fires each time a new slide is activated
+      Reveal.addEventListener( 'slidechanged', function( event ) {
+        // event.indexh & event.indexv
+      } );
+
+      Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: true,
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // If true; each slide will be pushed to the browser history
+        history: true,
+
+        // Loops the presentation, defaults to false
+        loop: false,
+
+        // Flags if mouse wheel navigation should be enabled
+        mouseWheel: true,
+
+        // Apply a 3D roll to links on hover
+        rollingLinks: false,
+
+        // UI style
+        theme: query.theme || 'blackout', // default/neon
+
+        // Transition style
+        transition: query.transition || 'default' // default/cube/page/concave/linear(2d)
+      });
+
+      hljs.initHighlightingOnLoad();
+    </script>
+
+  </body>
+</html>
