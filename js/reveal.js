@@ -1,5 +1,5 @@
 /*!
- * reveal.js 1.3
+ * reveal.js 1.4
  * http://lab.hakim.se/reveal-js
  * MIT licensed
  * 
@@ -7,8 +7,8 @@
  */
 var Reveal = (function(){
 	
-	var HORIZONTAL_SLIDES_SELECTOR = '#reveal .slides>section',
-		VERTICAL_SLIDES_SELECTOR = '#reveal .slides>section.present>section',
+	var HORIZONTAL_SLIDES_SELECTOR = '.reveal .slides>section',
+		VERTICAL_SLIDES_SELECTOR = '.reveal .slides>section.present>section',
 
 		IS_TOUCH_DEVICE = !!( 'ontouchstart' in window ),
 
@@ -18,7 +18,7 @@ var Reveal = (function(){
 
 		// Configurations options, can be overridden at initialization time 
 		config = {
-			controls: false,
+			controls: true,
 			progress: false,
 			history: false,
 			loop: false,
@@ -84,14 +84,17 @@ var Reveal = (function(){
 		}
 
 		// Cache references to DOM elements
-		dom.wrapper = document.querySelector( '#reveal' );
-		dom.progress = document.querySelector( '#reveal .progress' );
-		dom.progressbar = document.querySelector( '#reveal .progress span' );
-		dom.controls = document.querySelector( '#reveal .controls' );
-		dom.controlsLeft = document.querySelector( '#reveal .controls .left' );
-		dom.controlsRight = document.querySelector( '#reveal .controls .right' );
-		dom.controlsUp = document.querySelector( '#reveal .controls .up' );
-		dom.controlsDown = document.querySelector( '#reveal .controls .down' );
+		dom.wrapper = document.querySelector( '.reveal' );
+		dom.progress = document.querySelector( '.reveal .progress' );
+		dom.progressbar = document.querySelector( '.reveal .progress span' );
+		
+		if ( config.controls ) {
+			dom.controls = document.querySelector( '.reveal .controls' );
+			dom.controlsLeft = document.querySelector( '.reveal .controls .left' );
+			dom.controlsRight = document.querySelector( '.reveal .controls .right' );
+			dom.controlsUp = document.querySelector( '.reveal .controls .up' );
+			dom.controlsDown = document.querySelector( '.reveal .controls .down' );
+		}
 
 		addEventListeners();
 
@@ -123,7 +126,7 @@ var Reveal = (function(){
 			config.transition = 'linear';
 		}
 
-		if( config.controls ) {
+		if( config.controls && dom.controls ) {
 			dom.controls.style.display = 'block';
 		}
 
@@ -156,11 +159,13 @@ var Reveal = (function(){
 		document.addEventListener( 'touchmove', onDocumentTouchMove, false );
 		document.addEventListener( 'touchend', onDocumentTouchEnd, false );
 		window.addEventListener( 'hashchange', onWindowHashChange, false );
-		
-		dom.controlsLeft.addEventListener( 'click', preventAndForward( navigateLeft ), false );
-		dom.controlsRight.addEventListener( 'click', preventAndForward( navigateRight ), false );
-		dom.controlsUp.addEventListener( 'click', preventAndForward( navigateUp ), false );
-		dom.controlsDown.addEventListener( 'click', preventAndForward( navigateDown ), false );
+
+		if ( config.controls && dom.controls ) {
+			dom.controlsLeft.addEventListener( 'click', preventAndForward( navigateLeft ), false );
+			dom.controlsRight.addEventListener( 'click', preventAndForward( navigateRight ), false );
+			dom.controlsUp.addEventListener( 'click', preventAndForward( navigateUp ), false );
+			dom.controlsDown.addEventListener( 'click', preventAndForward( navigateDown ), false );	
+		}
 	}
 
 	function removeEventListeners() {
@@ -170,10 +175,12 @@ var Reveal = (function(){
 		document.removeEventListener( 'touchend', onDocumentTouchEnd, false );
 		window.removeEventListener( 'hashchange', onWindowHashChange, false );
 		
-		dom.controlsLeft.removeEventListener( 'click', preventAndForward( navigateLeft ), false );
-		dom.controlsRight.removeEventListener( 'click', preventAndForward( navigateRight ), false );
-		dom.controlsUp.removeEventListener( 'click', preventAndForward( navigateUp ), false );
-		dom.controlsDown.removeEventListener( 'click', preventAndForward( navigateDown ), false );
+		if ( config.controls && dom.controls ) {
+			dom.controlsLeft.removeEventListener( 'click', preventAndForward( navigateLeft ), false );
+			dom.controlsRight.removeEventListener( 'click', preventAndForward( navigateRight ), false );
+			dom.controlsUp.removeEventListener( 'click', preventAndForward( navigateUp ), false );
+			dom.controlsDown.removeEventListener( 'click', preventAndForward( navigateDown ), false );
+		}
 	}
 
 	/**
@@ -402,7 +409,7 @@ var Reveal = (function(){
 	 */
 	function linkify() {
         if( supports3DTransforms ) {
-        	var nodes = document.querySelectorAll( '#reveal .slides section a:not(.image)' );
+        	var nodes = document.querySelectorAll( '.reveal .slides section a:not(.image)' );
 
 	        for( var i = 0, len = nodes.length; i < len; i++ ) {
 	            var node = nodes[i];
@@ -474,7 +481,7 @@ var Reveal = (function(){
 	function deactivateOverview() {
 		dom.wrapper.classList.remove( 'overview' );
 
-		var slides = Array.prototype.slice.call( document.querySelectorAll( '#reveal .slides section' ) );
+		var slides = Array.prototype.slice.call( document.querySelectorAll( '.reveal .slides section' ) );
 
 		for( var i = 0, len = slides.length; i < len; i++ ) {
 			var element = slides[i];
@@ -610,16 +617,19 @@ var Reveal = (function(){
 	 * Updates the visual slides to represent the currently
 	 * set indices. 
 	 */
-	function slide() {
+	function slide( h, v ) {
 		// Remember the state before this slide
 		var stateBefore = state.concat();
 
 		// Reset the state array
 		state.length = 0;
 
+		var indexhBefore = indexh,
+			indexvBefore = indexv;
+
 		// Activate and transition to the new slide
-		indexh = updateSlides( HORIZONTAL_SLIDES_SELECTOR, indexh );
-		indexv = updateSlides( VERTICAL_SLIDES_SELECTOR, indexv );
+		indexh = updateSlides( HORIZONTAL_SLIDES_SELECTOR, h === undefined ? indexh : h );
+		indexv = updateSlides( VERTICAL_SLIDES_SELECTOR, v === undefined ? indexv : v );
 
 		// Apply the new state
 		stateLoop: for( var i = 0, len = state.length; i < len; i++ ) {
@@ -658,17 +668,41 @@ var Reveal = (function(){
 		clearTimeout( writeURLTimeout );
 		writeURLTimeout = setTimeout( writeURL, 1500 );
 
-		// Dispatch an event notifying observers of the change in slide
-		dispatchEvent( 'slidechanged', {
-			'indexh': indexh, 
-			'indexv': indexv
-		} );
+		// Only fire if the slide index is different from before
+		if( indexh !== indexhBefore || indexv !== indexvBefore ) {
+			// Query all horizontal slides in the deck
+			var horizontalSlides = document.querySelectorAll( HORIZONTAL_SLIDES_SELECTOR );
+
+			// Find the previous and current horizontal slides
+			var previousHorizontalSlide = horizontalSlides[ indexhBefore ],
+				currentHorizontalSlide = horizontalSlides[ indexh ];
+
+			// Query all vertical slides inside of the previous and current horizontal slides
+			var previousVerticalSlides = previousHorizontalSlide.querySelectorAll( 'section' );
+				currentVerticalSlides = currentHorizontalSlide.querySelectorAll( 'section' );
+
+			// Dispatch an event notifying observers of the change in slide
+			dispatchEvent( 'slidechanged', {
+				// Include the current indices in the event
+				'indexh': indexh, 
+				'indexv': indexv,
+
+				// Passes direct references to the slide HTML elements, attempts to find
+				// a vertical slide and falls back on the horizontal parent
+				'previousSlide': previousVerticalSlides[ indexvBefore ] || previousHorizontalSlide,
+				'currentSlide': currentVerticalSlides[ indexv ] || currentHorizontalSlide
+			} );
+		}
 	}
 
 	/**
 	 * Updates the state and link pointers of the controls.
 	 */
 	function updateControls() {
+		if ( !config.controls || !dom.controls ) {
+			return;
+		}
+		
 		var routes = availableRoutes();
 
 		// Remove the 'enabled' class from all directions
@@ -732,7 +766,7 @@ var Reveal = (function(){
 
 	/**
 	 * Dispatches an event of the specified type from the 
-	 * #reveal DOM element.
+	 * reveal DOM element.
 	 */
 	function dispatchEvent( type, properties ) {
 		var event = document.createEvent( "HTMLEvents", 1, 2 );
@@ -788,7 +822,7 @@ var Reveal = (function(){
 				verticalFragments[ verticalFragments.length - 1 ].classList.remove( 'visible' );
 
 				// Notify subscribers of the change
-				dispatchEvent( 'fragmenthidden', { fragment: verticalFragments[0] } );
+				dispatchEvent( 'fragmenthidden', { fragment: verticalFragments[ verticalFragments.length - 1 ] } );
 				return true;
 			}
 		}
@@ -799,7 +833,7 @@ var Reveal = (function(){
 				horizontalFragments[ horizontalFragments.length - 1 ].classList.remove( 'visible' );
 
 				// Notify subscribers of the change
-				dispatchEvent( 'fragmenthidden', { fragment: horizontalFragments[0] } );
+				dispatchEvent( 'fragmenthidden', { fragment: horizontalFragments[ horizontalFragments.length - 1 ] } );
 				return true;
 			}
 		}
@@ -814,40 +848,31 @@ var Reveal = (function(){
 	 * @param {Number} v The vertical index of the slide to show
 	 */
 	function navigateTo( h, v ) {
-		indexh = h === undefined ? indexh : h;
-		indexv = v === undefined ? indexv : v;
-		
-		slide();
+		slide( h, v );
 	}
 	
 	function navigateLeft() {
 		// Prioritize hiding fragments
 		if( overviewIsActive() || previousFragment() === false ) {
-			indexh --;
-			indexv = 0;
-			slide();
+			slide( indexh - 1, 0 );
 		}
 	}
 	function navigateRight() {
 		// Prioritize revealing fragments
 		if( overviewIsActive() || nextFragment() === false ) {
-			indexh ++;
-			indexv = 0;
-			slide();
+			slide( indexh + 1, 0 );
 		}
 	}
 	function navigateUp() {
 		// Prioritize hiding fragments
 		if( overviewIsActive() || previousFragment() === false ) {
-			indexv --;
-			slide();
+			slide( indexh, indexv - 1 );
 		}
 	}
 	function navigateDown() {
 		// Prioritize revealing fragments
 		if( overviewIsActive() || nextFragment() === false ) {
-			indexv ++;
-			slide();
+			slide( indexh, indexv + 1 );
 		}
 	}
 
@@ -865,7 +890,7 @@ var Reveal = (function(){
 			}
 			else {
 				// Fetch the previous horizontal slide, if there is one
-				var previousSlide = document.querySelector( '#reveal .slides>section.past:nth-child(' + indexh + ')' );
+				var previousSlide = document.querySelector( '.reveal .slides>section.past:nth-child(' + indexh + ')' );
 
 				if( previousSlide ) {
 					indexv = ( previousSlide.querySelectorAll('section').length + 1 ) || 0;
@@ -906,14 +931,19 @@ var Reveal = (function(){
 		navigateRight: navigateRight,
 		navigateUp: navigateUp,
 		navigateDown: navigateDown,
+		navigatePrev: navigatePrev,
+		navigateNext: navigateNext,
 		toggleOverview: toggleOverview,
+
+		addEventListeners: addEventListeners,
+		removeEventListeners: removeEventListeners,
 
 		// Forward event binding to the reveal DOM element
 		addEventListener: function( type, listener, useCapture ) {
-			( dom.wrapper || document.querySelector( '#reveal' ) ).addEventListener( type, listener, useCapture );
+			( dom.wrapper || document.querySelector( '.reveal' ) ).addEventListener( type, listener, useCapture );
 		},
 		removeEventListener: function( type, listener, useCapture ) {
-			( dom.wrapper || document.querySelector( '#reveal' ) ).removeEventListener( type, listener, useCapture );
+			( dom.wrapper || document.querySelector( '.reveal' ) ).removeEventListener( type, listener, useCapture );
 		}
 	};
 	

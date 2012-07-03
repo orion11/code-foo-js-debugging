@@ -1,12 +1,12 @@
-#reveal .red,
-#reveal .controls a.enabled {
+.reveal .red,
+.reveal .controls a.enabled {
   color: #d3222a;
 }
-#reveal .progress span {
+.reveal .progress span {
   background: #d3222a;
 }
 
-#reveal .logo {
+.reveal .logo {
   margin: 0;
   background: rgba(255,255,255,0.0);
   border: 0px;
@@ -15,10 +15,10 @@
      -moz-box-shadow: 0 0 0px rgba(0, 0, 0, 0.15);
           box-shadow: 0 0 0px rgba(0, 0, 0, 0.15);
 }
-#reveal a:not(.image) {
+.reveal a:not(.image) {
   color: #d3222a;
 }
-#reveal a:not(.image):hover {
+.reveal a:not(.image):hover {
   background: hsla(185, 25%, 20%, 0.0);
   color: #d3222a;
   text-decoration: underline;

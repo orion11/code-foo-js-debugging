@@ -12,7 +12,7 @@ Curious about how it looks in action? [Check out the demo page](http://lab.hakim
 
 Markup heirarchy needs to be ``<div id="reveal"> <div class="slides"> <section>`` where the ``<section>`` represents one slide and can be repeated indefinitely. If you place multiple ``<section>``'s inside of another ``<section>`` they will be shown as vertical slides. For example:
 
-```
+```html
 <div id="reveal">
 	<div class="slides"> 
 		<section>Single Horizontal Slide</section>
@@ -28,7 +28,7 @@ Markup heirarchy needs to be ``<div id="reveal"> <div class="slides"> <section>`
 
 At the end of your page, after ``<script src="js/reveal.js"></script>``, you need to initialize reveal by running the following code. Note that all config values are optional.
 
-```
+```javascript
 Reveal.initialize({
 	// Display controls in the bottom right corner
 	controls: true,
@@ -65,6 +65,9 @@ The Reveal class provides a minimal JavaScript API for controlling its navigatio
 - Reveal.navigateRight();
 - Reveal.navigateUp();
 - Reveal.navigateDown();
+- Reveal.navigatePrev();
+- Reveal.navigateNext();
+- Reveal.toggleOverview();
 
 ### States
 
@@ -72,7 +75,7 @@ If you set ``data-state="somestate"`` on a slide ``<section>``, "somestate" will
 
 Furthermore you can also listen to these changes in state via JavaScript:
 
-```
+```javascript
 Reveal.addEventListener( 'somestate', function() {
 	// TODO: Sprinkle magic
 }, false );
@@ -80,11 +83,11 @@ Reveal.addEventListener( 'somestate', function() {
 
 ### Slide change event
 
-An 'slidechanged' event is fired each time the slide is changed (regardless of state). The event object holds the index of the current slide.
+An 'slidechanged' event is fired each time the slide is changed (regardless of state). The event object holds the index values of the current slide as well as a reference to the previous and current slide HTML nodes.
 
-```
+```javascript
 Reveal.addEventListener( 'slidechanged', function( event ) {
-	// event.indexh & event.indexv
+	// event.previousSlide, event.currentSlide, event.indexh, event.indexv
 } );
 ```
 
@@ -92,7 +95,7 @@ Reveal.addEventListener( 'slidechanged', function( event ) {
 
 When a slide fragment is either shown or hidden reveal.js will dispatch an event.
 
-```
+```javascript
 Reveal.addEventListener( 'fragmentshown', function( event ) {
 	// event.fragment = the fragment DOM element
 } );
@@ -123,6 +126,8 @@ Reveal.addEventListener( 'fragmenthidden', function( event ) {
 * [To be Future Friendly is to be Device Agnostic](http://dl.dropbox.com/u/409429/presentations/toster-2012/index.html) by [Joe McCann](https://github.com/joemccann)
 * [The Web Development Workflow of 2013](http://dl.dropbox.com/u/39519/talks/fluent/index.html) by [Paul Irish](https://github.com/paulirish)
 * [How To Cope With Graphical Challenges Using Latest Web Technologies](http://alexw.me/playground/slideshows/w3c_netcraft/) by [Alex Wolkov](https://github.com/altryne)
+* [Going Deeper with jQuery Mobile](http://andymatthews.net/downloads/presentations/going-deeper-with-jquery-mobile/) by [Andy Matthews](https://github.com/commadelimited)
+* [Studio Nord](http://studionord.org)
 
 
 [Send me a link](http://hakim.se/about/contact) if you used reveal.js for a project or presentation.
@@ -130,7 +135,13 @@ Reveal.addEventListener( 'fragmenthidden', function( event ) {
 
 ## History
 
-#### 1.3 (master)
+#### 1.4 (master/beta)
+- Main #reveal container is now selected via a class instead of ID
+- API methods for adding or removing all event listeners
+- The 'slidechange' event now includes currentSlide and previousSlide
+- Fixed bug where 'slidechange' was firing twice when history was enabled
+
+#### 1.3
 - Revised keyboard shortcuts, including ESC for overview, N for next, P for previous. Thanks [mahemoff](https://github.com/mahemoff)
 - Added support for looped presentations via config
 - Fixed IE9 fallback
@@ -140,6 +151,8 @@ Reveal.addEventListener( 'fragmenthidden', function( event ) {
 - The address bar now hides automatically on mobile browsers
 - Space and return keys can be used to exit the overview mode
 - Events for fragment states ('fragmentshown'/'fragmenthidden')
+- Support for swipe navigation on touch devices. Thanks [akiersky](https://github.com/akiersky)
+- Support for pinch to overview on touch devices
 
 #### 1.2
 
